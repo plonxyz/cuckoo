@@ -240,7 +240,7 @@ def do_mkdir():
     if "dirpath" not in request.form:
         return json_error(400, "No dirpath has been provided")
 
-    mode = int(request.form.get("mode", 0777))
+    mode = int(request.form.get("mode", 0o777))
 
     try:
         os.makedirs(request.form["dirpath"], mode=mode)
@@ -349,14 +349,14 @@ def do_execute():
         return json_error(400, "No command has been provided")
 
     # Execute the command asynchronously? As a shell command?
-    async = "async" in request.form
+    async_mode = "async" in request.form
     shell = "shell" in request.form
 
     cwd = request.form.get("cwd")
     stdout = stderr = None
 
     try:
-        if async:
+        if async_mode:
             subprocess.Popen(request.form["command"], shell=shell, cwd=cwd)
         else:
             p = subprocess.Popen(
@@ -376,7 +376,7 @@ def do_execpy():
         return json_error(400, "No Python file has been provided")
 
     # Execute the command asynchronously? As a shell command?
-    async = "async" in request.form
+    async_mode = "async" in request.form
 
     cwd = request.form.get("cwd")
     stdout = stderr = None
@@ -387,7 +387,7 @@ def do_execpy():
     ]
 
     try:
-        if async:
+        if async_mode:
             subprocess.Popen(args, cwd=cwd)
         else:
             p = subprocess.Popen(args, cwd=cwd,
