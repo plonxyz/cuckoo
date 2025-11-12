@@ -505,7 +505,8 @@ class Database(object, metaclass=Singleton):
 
     def __del__(self):
         """Disconnects pool."""
-        self.engine.dispose()
+        if hasattr(self, 'engine') and self.engine:
+            self.engine.dispose()
 
     def _connect_database(self, connection_string):
         """Connect to a database.

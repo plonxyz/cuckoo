@@ -44,7 +44,7 @@ def cuckoo_create(username=None, cfg=None, quiet=False):
     """Create a new Cuckoo Working Directory."""
     if not quiet:
         print(jinja2.Environment().from_string(
-            open(cwd("cwd", "init-pre.jinja2", private=True), "rb").read()
+            open(cwd("cwd", "init-pre.jinja2", private=True), "r").read()
         ).render(cwd=cwd, yellow=yellow, red=red))
 
     if not os.path.exists(cwd(".cwd", private=True)):
@@ -66,7 +66,7 @@ def cuckoo_create(username=None, cfg=None, quiet=False):
     # directory ourselves (assuming it didn't exist already).
     orig_makedirs = shutil.os.makedirs
 
-    def _ignore_first_makedirs(dst):
+    def _ignore_first_makedirs(dst, *args, **kwargs):
         shutil.os.makedirs = orig_makedirs
 
     shutil.os.makedirs = _ignore_first_makedirs
@@ -87,7 +87,7 @@ def cuckoo_create(username=None, cfg=None, quiet=False):
     if not quiet:
         print()
         print(jinja2.Environment().from_string(
-            open(cwd("cwd", "init-post.jinja2", private=True), "rb").read()
+            open(cwd("cwd", "init-post.jinja2", private=True), "r").read()
         ).render())
 
 def cuckoo_resources():

@@ -25,7 +25,7 @@ def write_supervisor_conf(username):
         cuckoo_path = "cuckoo"
 
     template = jinja2.Environment().from_string(
-        open(cwd("cwd", "supervisord.jinja2", private=True), "rb").read()
+        open(cwd("cwd", "supervisord.jinja2", private=True), "r").read()
     )
 
     with open(cwd("supervisord.conf"), "wb") as f:
@@ -34,7 +34,7 @@ def write_supervisor_conf(username):
             "username": username,
             "cuckoo_path": cuckoo_path,
             "python_path": python_path,
-        }).rstrip().encode("utf8") + "\n")
+        }).rstrip().encode("utf8") + b"\n")
 
 def write_cuckoo_conf(cfg=None):
     if cfg is None:
@@ -104,8 +104,8 @@ def write_cuckoo_conf(cfg=None):
     raw["config"] = _config
     for filename in os.listdir(cwd("cwd", "conf", private=True)):
         template = jinja2.Template(
-            open(cwd("cwd", "conf", filename, private=True), "rb").read()
+            open(cwd("cwd", "conf", filename, private=True), "r").read()
         )
         open(cwd("conf", filename), "wb").write(
-            template.render(raw).rstrip() + "\n"
+            (template.render(raw).rstrip() + "\n").encode("utf8")
         )
