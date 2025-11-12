@@ -11,7 +11,6 @@ import mmap
 import os
 import pefile
 import re
-import sflock
 import shutil
 import tempfile
 import zipfile
@@ -23,6 +22,18 @@ try:
     HAVE_PYDEEP = True
 except ImportError:
     HAVE_PYDEEP = False
+
+try:
+    import sflock
+    HAVE_SFLOCK = True
+except ImportError:
+    HAVE_SFLOCK = False
+    # Use python-magic as fallback
+    try:
+        import magic
+        sflock = type('sflock', (), {'magic': magic})()
+    except ImportError:
+        sflock = None
 
 log = logging.getLogger(__name__)
 

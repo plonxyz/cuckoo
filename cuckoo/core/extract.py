@@ -2,7 +2,12 @@
 # This file is part of Cuckoo Sandbox - http://www.cuckoosandbox.org
 # See the file 'docs/LICENSE' for copying permission.
 
-import egghatch
+try:
+    import egghatch
+    HAVE_EGGHATCH = True
+except ImportError:
+    HAVE_EGGHATCH = False
+
 import logging
 import os
 
@@ -115,7 +120,11 @@ class ExtractManager(object):
             return
 
         # This file contains a plaintext representation of the shellcode.
-        open("%s.txt" % filepath, "wb").write(egghatch.as_text(sc))
+        if HAVE_EGGHATCH:
+            open("%s.txt" % filepath, "wb").write(egghatch.as_text(sc))
+        else:
+            # Fallback: write raw bytes with basic formatting
+            open("%s.txt" % filepath, "wb").write(sc)
 
         yara_matches = File(filepath).get_yara("shellcode")
         self.items.append({

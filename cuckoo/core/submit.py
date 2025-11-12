@@ -6,7 +6,11 @@ import copy
 import json
 import logging
 import os
-import sflock
+try:
+    import sflock
+    HAVE_SFLOCK = True
+except ImportError:
+    HAVE_SFLOCK = False
 import zipfile
 
 from cuckoo.common.exceptions import CuckooOperationalError

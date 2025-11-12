@@ -40,18 +40,18 @@ try:
     logging.getLogger("volatility.obj").setLevel(rootlogger.level)
     logging.getLogger("volatility.utils").setLevel(rootlogger.level)
 except ImportError as e:
-    if e.message == "No module named Crypto.Hash":
+    if str(e) == "No module named Crypto.Hash":
         raise CuckooStartupError(
             "Could not load Volatility: the PyCrypto package is missing "
             "(install with `pip install pycrypto`)"
         )
 
-    if e.message.startswith("No module named volatility"):
+    if str(e).startswith("No module named volatility") or str(e).startswith("No module named 'volatility"):
         HAVE_VOLATILITY = False
     else:
         raise
 except NameError as e:
-    if "distorm3" in e.message:
+    if "distorm3" in str(e):
         raise CuckooStartupError(
             "Could not load Volatility: the distorm3 package is missing "
             "(install with `pip install distorm3`)"

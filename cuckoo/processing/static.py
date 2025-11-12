@@ -10,12 +10,20 @@ import logging
 import oletools.olevba
 import oletools.oleobj
 import os
-import peepdf.JSAnalysis
-import peepdf.PDFCore
+try:
+    import peepdf.JSAnalysis
+    import peepdf.PDFCore
+    HAVE_PEEPDF = True
+except ImportError:
+    HAVE_PEEPDF = False
 import pefile
 import peutils
 import re
-import sflock
+try:
+    import sflock
+    HAVE_SFLOCK = True
+except ImportError:
+    HAVE_SFLOCK = False
 import struct
 import zipfile
 import zlib
@@ -67,7 +75,15 @@ class PortableExecutable(object):
         @param data: data to be analyzed.
         @return: file type or None.
         """
-        return sflock.magic.from_buffer(data)
+        if HAVE_SFLOCK:
+            return sflock.magic.from_buffer(data)
+        else:
+            # Fallback to python-magic if available
+            try:
+                import magic
+                return magic.from_buffer(data)
+            except ImportError:
+                return None
 
     def _get_peid_signatures(self):
         """Get PEID signatures.
@@ -685,6 +701,10 @@ class PdfDocument(object):
         return None
 
     def run(self):
+        if not HAVE_PEEPDF:
+            log.warning("peepdf is not installed. PDF analysis will be limited.")
+            return []
+
         p = peepdf.PDFCore.PDFParser()
         r, f = p.parse(
             self.filepath, forceMode=True,

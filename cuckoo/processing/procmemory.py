@@ -7,7 +7,11 @@ import logging
 import os
 import pefile
 import re
-import roach
+try:
+    import roach
+    HAVE_ROACH = True
+except ImportError:
+    HAVE_ROACH = False
 
 from cuckoo.common.abstracts import Processing
 from cuckoo.common.objects import File
@@ -166,8 +170,13 @@ class ProcessMemory(Processing):
                 pid, num = list(map(int, re.findall("(\\d+)", dmp)))
 
                 regions = []
-                for region in roach.procmem(dump_path).regions:
-                    regions.append(region.to_json())
+                if HAVE_ROACH:
+                    for region in roach.procmem(dump_path).regions:
+                        regions.append(region.to_json())
+                else:
+                    log.warning(
+                        "roach is not installed. Memory regions analysis will be limited."
+                    )
 
                 proc = dict(
                     file=dump_path, pid=pid, num=num,

@@ -10,7 +10,7 @@ import requests
 import socket
 import subprocess
 import time
-import wakeonlan.wol
+import wakeonlan
 import xmlrpc.client
 
 from cuckoo.common.abstracts import Machinery
@@ -248,4 +248,4 @@ class Physical(Machinery):
         """Start a machine that's currently shutdown."""
         if hostname in self.fog_machines:
             macaddr, download = self.fog_machines[hostname]
-            wakeonlan.wol.send_magic_packet(macaddr)
+            wakeonlan.send_magic_packet(macaddr)

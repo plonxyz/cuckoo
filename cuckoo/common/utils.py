@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 # Don't allow all characters in "string.printable", as newlines, carriage
 # returns, tabs, \x0b, and \x0c may mess up reports.
 PRINTABLE_CHARACTERS = (
-    string.letters + string.digits + string.punctuation + " \t\r\n"
+    string.ascii_letters + string.digits + string.punctuation + " \t\r\n"
 )
 
 def convert_char(c):

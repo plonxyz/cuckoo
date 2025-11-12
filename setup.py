@@ -194,18 +194,18 @@ do_setup(
     },
     install_requires=[
         "alembic>=1.7.0",
-        "androguard>=3.4.0",
+        # "androguard>=3.4.0",  # Has mutf8 dependency issue with Python 3.11
         "beautifulsoup4>=4.11.0",
         "chardet>=5.0.0",
         "click>=8.0.0",
         "django>=3.2.0",
         "django-extensions>=3.1.0",
         "dpkt>=1.9.8",
-        "egghatch>=0.2.3",
+        # "egghatch>=0.2.3",  # Python 2 only - removed
         "elasticsearch>=7.0.0",
         "flask>=2.0.0",
         "flask-sqlalchemy>=2.5.0",
-        "httpreplay>=0.2.4",
+        # "httpreplay>=0.2.4",  # May not be Python 3 compatible
         "gevent>=21.0.0",
         "jinja2>=3.0.0",
         "jsbeautifier>=1.14.0",
@@ -213,17 +213,18 @@ do_setup(
         "pefile>=2023.0.0",
         "pillow>=9.0.0",
         "pyelftools>=0.29",
-        "pyguacamole>=0.10",
+        # "pyguacamole>=0.10",  # May not exist in newer versions
         "pymisp>=2.4.150",
         "pymongo>=4.0.0",
         "python-dateutil>=2.8.0",
         "python-magic>=0.4.27",
-        "roach>=0.1.2",
-        "sflock>=0.3.10",
+        # "roach>=0.1.2",  # Cuckoo-specific, may not be Python 3 compatible
+        # "sflock>=0.3.10",  # Cuckoo-specific, may not be Python 3 compatible
         "sqlalchemy>=1.4.0",
         "unicorn>=2.0.0",
         "wakeonlan>=2.0.0",
         "yara-python>=4.2.0",
+        "requests>=2.28.0",  # Added to base requirements
     ],
     extras_require={
         ":sys_platform == 'win32'": [

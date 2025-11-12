@@ -7,8 +7,12 @@ import collections
 import dpkt
 import hashlib
 import heapq
-import httpreplay
-import httpreplay.cut
+try:
+    import httpreplay
+    import httpreplay.cut
+    HAVE_HTTPREPLAY = True
+except ImportError:
+    HAVE_HTTPREPLAY = False
 import itertools
 import json
 import logging
@@ -30,7 +34,8 @@ from cuckoo.common.safelist import is_safelisted_domain, is_safelisted_ip
 from cuckoo.misc import mkdir
 
 # Be less verbose about httpreplay logging messages.
-logging.getLogger("httpreplay").setLevel(logging.CRITICAL)
+if HAVE_HTTPREPLAY:
+    logging.getLogger("httpreplay").setLevel(logging.CRITICAL)
 
 Keyed = collections.namedtuple("Keyed", ["key", "obj"])
 Packet = collections.namedtuple("Packet", ["raw", "ts"])
@@ -887,7 +892,7 @@ class NetworkAnalysis(Processing):
 
         results.update(Pcap(pcap_path, self.options).run())
 
-        if os.path.exists(pcap_path):
+        if os.path.exists(pcap_path) and HAVE_HTTPREPLAY:
             try:
                 p2 = Pcap2(pcap_path, self.get_tlsmaster(), self.network_path)
                 results.update(p2.run())

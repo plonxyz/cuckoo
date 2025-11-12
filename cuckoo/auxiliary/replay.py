@@ -2,7 +2,12 @@
 # This file is part of Cuckoo Sandbox - http://www.cuckoosandbox.org
 # See the file 'docs/LICENSE' for copying permission.
 
-import httpreplay.utils
+try:
+    import httpreplay.utils
+    HAVE_HTTPREPLAY = True
+except ImportError:
+    HAVE_HTTPREPLAY = False
+
 import logging
 import os.path
 import tempfile
@@ -25,6 +30,12 @@ class Replay(Auxiliary):
 
     def pcap2mitm(self, pcappath, tlsmaster):
         """Translate a .pcap into a .mitm file."""
+        if not HAVE_HTTPREPLAY:
+            log.error(
+                "httpreplay is not installed. Cannot convert PCAP to MITM format. "
+                "Replay analysis with .pcap files is not available."
+            )
+            return None
         mitmpath = tempfile.mktemp(suffix=".mitm")
         with open(mitmpath, "wb") as f:
             httpreplay.utils.pcap2mitm(pcappath, f, tlsmaster, True)
@@ -66,6 +77,8 @@ class Replay(Auxiliary):
         if mitmpath.endswith(".pcap"):
             tlsmaster = self.task.options.get("replay.tls")
             mitmpath = self.pcap2mitm(mitmpath, tlsmaster)
+            if not mitmpath:
+                return
 
         if not os.path.getsize(mitmpath):
             log.error(
