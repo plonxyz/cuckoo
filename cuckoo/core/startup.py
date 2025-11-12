@@ -276,7 +276,7 @@ def init_modules():
     for category in categories:
         log.debug("Imported \"%s\" modules:", category)
 
-        entries = cuckoo.plugins[category]
+        entries = list(cuckoo.plugins[category])
         for entry in entries:
             if entry == entries[-1]:
                 log.debug("\t `-- %s", entry.__name__)
@@ -378,7 +378,7 @@ def init_binaries():
             throw()
     # If "latest" is a file, check that it contains a legitimate hash.
     elif os.path.isfile(dirpath):
-        monitor = os.path.basename(open(dirpath, "rb").read().strip())
+        monitor = os.path.basename(open(dirpath, "rb").read().strip().decode('utf-8'))
         if not monitor or not os.path.isdir(cwd("monitor", monitor)):
             throw()
     else:

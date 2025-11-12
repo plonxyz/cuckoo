@@ -233,12 +233,18 @@ def exception_message():
     """Create a message describing an unhandled exception."""
     def get_os_release():
         """Returns detailed OS release."""
-        if platform.linux_distribution()[0]:
-            return " ".join(platform.linux_distribution())
-        elif platform.mac_ver()[0]:
-            return "%s %s" % (platform.mac_ver()[0], platform.mac_ver()[2])
-        else:
-            return "Unknown"
+        # platform.linux_distribution() was removed in Python 3.8
+        # Use platform.freedesktop_os_release() for Python 3.10+ or fallback to platform()
+        try:
+            if hasattr(platform, 'freedesktop_os_release'):
+                info = platform.freedesktop_os_release()
+                return "{} {}".format(info.get('NAME', ''), info.get('VERSION', ''))
+            elif platform.mac_ver()[0]:
+                return "%s %s" % (platform.mac_ver()[0], platform.mac_ver()[2])
+            else:
+                return platform.platform()
+        except:
+            return platform.platform()
 
     import pkg_resources
 

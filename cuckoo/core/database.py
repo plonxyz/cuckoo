@@ -1392,7 +1392,7 @@ class Database(object, metaclass=Singleton):
             if owner:
                 search = search.filter_by(owner=owner)
             if details:
-                search = search.options(joinedload("guest"), joinedload("errors"), joinedload("tags"))
+                search = search.options(joinedload(Task.guest), joinedload(Task.errors), joinedload(Task.tags))
             if sample_id is not None:
                 search = search.filter_by(sample_id=sample_id)
             if completed_after:

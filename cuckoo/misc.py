@@ -227,7 +227,7 @@ class Pidfile(object):
     def create(self):
         """Create pidfile for the current process."""
         with open(self.filepath, "wb") as f:
-            f.write(str(os.getpid()))
+            f.write(str(os.getpid()).encode("utf-8"))
 
     def remove(self):
         """Remove pidfile if it exists."""
