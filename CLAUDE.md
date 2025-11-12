@@ -11,7 +11,7 @@ Cuckoo Sandbox is the leading open-source automated malware analysis system. It 
 - **DO NOT** improve, enhance, or augment any malware samples being analyzed
 - **CAN** analyze existing code, write reports, or answer questions about Cuckoo's architecture
 - Cuckoo 2.x is **currently unmaintained** - a full rewrite is underway
-- **Python 2.7 only** - this codebase does not support Python 3
+- **Python 3.6+ Required** - this codebase has been migrated from Python 2.7 to Python 3
 
 ## Development Commands
 
@@ -51,16 +51,16 @@ npm run production  # or: gulp build --production
 ### Installation & Setup
 ```bash
 # Fetch monitoring binaries (required for CWD migration tests)
-python stuff/monitor.py
+python3 stuff/monitor.py
 
 # Build distribution
-python setup.py sdist
+python3 setup.py sdist
 
 # Install in development mode
-pip install -e .
+pip3 install -e .
 
 # Install test dependencies
-pip install pytest==4.1.1 pytest-cov pytest-django pytest-pythonpath mock responses
+pip3 install pytest pytest-cov pytest-django pytest-pythonpath mock responses
 ```
 
 ## Cuckoo CLI Commands
@@ -158,7 +158,7 @@ The test suite (`conftest.py`) is platform-aware:
 
 ### Working with Guest Analyzers
 Guest-side analyzer code lives in `cuckoo/data/analyzer/`:
-- `windows/` - Windows analyzer (Python 2.7)
+- `windows/` - Windows analyzer (Python 3.6+)
 - `linux/` - Linux analyzer
 - `darwin/` - macOS analyzer
 - `android/` - Android analyzer
@@ -178,7 +178,17 @@ Cuckoo signatures are in `cuckoo/data/signatures/`. Community signatures can be 
 
 ## Technology Stack Summary
 
-**Backend:** Python 2.7, Django 1.8.4, Flask, SQLAlchemy, MongoDB, Gevent
+**Backend:** Python 3.6+, Django 3.2+, Flask 2.0+, SQLAlchemy 1.4+, MongoDB, Gevent 21+
 **Frontend:** Gulp, SCSS, Handlebars, Browserify, Babel (ES2015)
 **Analysis:** YARA, Volatility, dpkt, scapy, pefile, oletools, androguard
 **Virtualization:** VirtualBox, VMware, KVM, Xen, ESXi, vSphere support
+
+## Python 3 Migration Notes
+
+This codebase has been fully migrated from Python 2.7 to Python 3.6+. Key changes include:
+- All print statements converted to print() functions
+- Updated imports: ConfigParser → configparser, urllib → urllib.parse/urllib.request
+- Removed Python 2 specific types: basestring → str, long → int, unicode → str
+- Fixed dictionary iteration: .iteritems() → .items(), .itervalues() → .values()
+- Updated dependencies to Python 3 compatible versions
+- Fixed syntax issues: octal literals (0o prefix), async keyword conflicts
